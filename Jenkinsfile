@@ -13,7 +13,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh '''cd /root
+                sh '''cd /Lesson02-GitHub
                 ./test.py'''
             }
         }
