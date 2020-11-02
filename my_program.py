@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import socket
 
 print ("Program to check the hostname and IP of the system")
