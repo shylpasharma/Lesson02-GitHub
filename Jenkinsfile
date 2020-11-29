@@ -1,20 +1,30 @@
 pipeline {
-    agent any
-    stages {
-        stage('Hello') {
+  environment {
+    registry = "shilpa1606/ubuntu"
+    registryCredential = 'dockerhub'
+  }
+  agent any
+  stages {
+        stage("Cloning git") {
             steps {
-                echo 'This is the best hello world program ever written'
+                git "https://github.com/shylpasharma/Lesson02-GitHub.git"
             }
         }
-        stage('CheckoutGitrepo') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/shylpasharma/Lesson02-GitHub.git']]])
-            }
-        }
-        stage('Deploy') {
-            steps {
-                sh '''./test.py'''
+        stage("Building Image") {
+            steps{
+            script {
+                dockerImage = docker.build registry + ":$BUILD_NUMBER"
             }
         }
     }
+        stage("Deploy Image") {
+        steps{
+            script {
+                docker.withRegistry( "", registryCredential ) {
+                    dockerImage.push()
+            }
+        }
+      }
+    }
+  }
 }
